@@ -1,0 +1,41 @@
+.runShortcutTooltip {
+    position: absolute;
+    bottom: 100%;
+    left: 0;
+    margin-bottom: 6px;
+  
+    padding: 6px 10px;
+    font-size: 12px;
+    line-height: 1.4;
+  
+    background: #111;
+    color: #fff;
+    border-radius: 8px;
+  
+    white-space: nowrap;
+    z-index: 10;
+}
+
+.runShortcutTooltip::after {
+    content: "";
+    position: absolute;
+    top: 100%;
+    left: 16px;
+    width: 0;
+    height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 7px solid #111;
+}
+  
+.tooltipClose {
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    padding: 0 0 0 8px;
+    z-index: 10;
+    transform: translate(0, 1px);
+}

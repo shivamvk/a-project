@@ -1,0 +1,26 @@
+.resultsSection {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+hr {
+    color: grey;
+    width: 400px;
+    align-self: flex-end;
+    margin-left: 0;
+}
+
+.metaSection {
+    display: flex;
+    height: fit-content;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.exportButton {
+    width: fit-content;
+    margin-left: auto;
+}
