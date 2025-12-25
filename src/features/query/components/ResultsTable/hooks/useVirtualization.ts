@@ -12,6 +12,8 @@ export function useVirtualization({
     totalRows,
 }: VirtualizationParams) {
     const containerRef = useRef<HTMLDivElement>(null);
+
+    // to throttle scroll updates to once per animation frame
     const rafRef = useRef<number | null>(null);
 
     const [scrollTop, setScrollTop] = useState(0);
@@ -20,6 +22,7 @@ export function useVirtualization({
     const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const top = e.currentTarget.scrollTop;
 
+        // prevent multiple state updates within the same frame
         if (rafRef.current !== null) return;
 
         rafRef.current = requestAnimationFrame(() => {
@@ -37,6 +40,8 @@ export function useVirtualization({
 
         measure();
 
+        // observe container resize to keep virtualization in sync with layout changes
+        // ideally container should not be resized but this is a safety net
         const ro = new ResizeObserver(measure);
         ro.observe(containerRef.current);
 
@@ -46,6 +51,7 @@ export function useVirtualization({
     const visibleRowCount = Math.ceil(height / rowHeight);
     const firstVisibleRow = Math.floor(scrollTop / rowHeight);
 
+    // expand render window by overscan to avoid blank gaps during fast scroll
     const startIndex = Math.max(0, firstVisibleRow - overscan);
     const endIndex = Math.min(
         totalRows,

@@ -15,7 +15,6 @@ export const logger = {
 function log(level: LogLevel, message: string, meta?: Record<string, unknown>) {
     const timestamp = new Date().toISOString();
 
-    // [TODO] Send this to NR/logman for observability
     console[level](
         `[${timestamp}] [${level.toUpperCase()}] ${message}`,
         meta ?? "",

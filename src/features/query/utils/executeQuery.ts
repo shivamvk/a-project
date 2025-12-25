@@ -10,5 +10,3 @@ export const executeQuery = async (): Promise<Query["result"]> => {
     }
     return getRandomResult();
 };
-
-// [TODO] when user clicks on new query, auto focus on the editor

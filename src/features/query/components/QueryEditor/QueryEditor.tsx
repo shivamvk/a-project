@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, {
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from "react";
 import { useQueryData } from "../../hooks/useQueryData";
 import { useActiveQuery } from "../../hooks/useActiveQuery";
 import RunButton from "./components/RunButton";
@@ -13,6 +19,7 @@ interface IQueryEditor {
 function QueryEditor({ query, setQuery }: IQueryEditor) {
     const { queries } = useQueryData();
     const { activeQueryId } = useActiveQuery();
+    const queryInputRef = useRef<HTMLTextAreaElement | null>(null);
 
     const [queryName, setQueryName] = useState(
         () =>
@@ -69,6 +76,12 @@ function QueryEditor({ query, setQuery }: IQueryEditor) {
         setQuery(queries[activeQueryId]?.sql || "");
     }, [activeQueryId, queries, setQuery]);
 
+    useEffect(() => {
+        if (activeQueryId === "") {
+            queryInputRef.current?.focus();
+        }
+    }, [activeQueryId]);
+
     return (
         <section>
             <form onSubmit={handleRun}>
@@ -92,6 +105,7 @@ function QueryEditor({ query, setQuery }: IQueryEditor) {
                 <br />
                 <textarea
                     id="sql-query-input"
+                    ref={queryInputRef}
                     name="sqlQuery"
                     value={query}
                     onChange={handleQueryChange}

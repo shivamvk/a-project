@@ -39,6 +39,7 @@ body,
   flex: 0 0 200px;
   border-right: 1px solid #eee;
   padding: 16px;
+  overflow-y: scroll;
 }
 
 button {

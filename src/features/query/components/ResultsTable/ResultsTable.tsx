@@ -54,7 +54,9 @@ export function ResultsTable({ results }: IResultsTable) {
                         {columns?.map((col) => (
                             <col
                                 key={col}
-                                style={{ width: columnWidths[col] ?? 200 }}
+                                style={{
+                                    width: columnWidths[col] ?? MAX_COL_WIDTH,
+                                }}
                             />
                         ))}
                     </colgroup>

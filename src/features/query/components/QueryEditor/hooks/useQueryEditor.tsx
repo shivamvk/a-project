@@ -26,6 +26,7 @@ export const useQueryEditor = (query: string, queryName: string) => {
             hasActiveQuery &&
             queries[activeQueryId]?.sql.trim() === query.trim();
 
+        // override only when was already on a query and did not change sql
         const shouldOverridePreviousQuery = hasActiveQuery && isSqlUnchanged;
 
         const id = shouldOverridePreviousQuery
@@ -72,7 +73,10 @@ export const useQueryEditor = (query: string, queryName: string) => {
 
         try {
             const result = await executeQuery();
+
+            // if current run is not the latest run, then skip updating state
             if (currentRunId !== runIdRef.current) return;
+
             const durationMs = Math.round(performance.now() - start);
 
             setQueries((prev) => ({

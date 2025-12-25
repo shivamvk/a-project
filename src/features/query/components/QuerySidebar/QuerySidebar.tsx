@@ -20,7 +20,6 @@ function QuerySidebar({ setQuery }: IQueryPage) {
 
     const { queriesToDisplay } = useFilterAndSort(searchTerm);
 
-    // [TODO] Need to understand this from html perspective properly
     const handleQuerySelect = useCallback(
         (e: React.MouseEvent<HTMLUListElement>) => {
             if (!(e.target instanceof HTMLElement)) return;
