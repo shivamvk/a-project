@@ -65,8 +65,8 @@ describe("downloadCSV", () => {
             .mockImplementation(() => {
                 return {
                     click: jest.fn(),
-                    set href(value: string) {},
-                    set download(value: string) {},
+                    set href(_value: string) {},
+                    set download(_value: string) {},
                 } as any;
             });
 

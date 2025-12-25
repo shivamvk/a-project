@@ -17,7 +17,7 @@ export const sampleQueries: Query[] = [
   LIMIT 1000;
   `.trim(),
         status: "success",
-        result: null,
+        result: { columns: [], rows: [] },
     },
 
     {
@@ -35,7 +35,7 @@ export const sampleQueries: Query[] = [
   LIMIT 2000;
   `.trim(),
         status: "success",
-        result: null,
+        result: { columns: [], rows: [] },
         name: "API Logs",
     },
 
@@ -54,7 +54,7 @@ export const sampleQueries: Query[] = [
   ORDER BY created_at DESC;
   `.trim(),
         status: "success",
-        result: null,
+        result: { columns: [], rows: [] },
     },
 
     {
@@ -70,6 +70,6 @@ export const sampleQueries: Query[] = [
   ORDER BY severity DESC;
   `.trim(),
         status: "success",
-        result: null,
+        result: { columns: [], rows: [] },
     },
 ];
