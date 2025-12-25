@@ -1,6 +1,13 @@
-import React, { useLayoutEffect, useRef, useState } from "react";
+import React from "react";
+
+// types
 import type { Results } from "../../types";
 
+// hooks
+import { useVirtualization } from "./hooks/useVirtualization";
+import { useColumnResize } from "./hooks/useColumnResize";
+
+// styles
 import styles from "./ResultsTable.module.css";
 
 interface IResultsTable {
@@ -9,52 +16,30 @@ interface IResultsTable {
 
 const ROW_HEIGHT = 36;
 const OVERSCAN = 5;
+const MIN_COL_WIDTH = 120;
+const MAX_COL_WIDTH = 200;
 
 export function ResultsTable({ results }: IResultsTable) {
     const { columns, rows } = results;
-
-    const containerRef = useRef<HTMLDivElement>(null);
-    const rafRef = useRef<number | null>(null);
-
-    const [scrollTop, setScrollTop] = useState(0);
-    const [height, setHeight] = useState(0);
-
-    const onScroll = (e: React.UIEvent<HTMLDivElement>) => {
-        const top = e.currentTarget.scrollTop;
-
-        if (rafRef.current !== null) return;
-
-        rafRef.current = requestAnimationFrame(() => {
-            setScrollTop(top);
-            rafRef.current = null;
-        });
-    };
-
-    useLayoutEffect(() => {
-        if (!containerRef.current) return;
-
-        const measure = () => {
-            setHeight(containerRef.current!.getBoundingClientRect().height);
-        };
-
-        measure();
-
-        const ro = new ResizeObserver(measure);
-        ro.observe(containerRef.current);
-
-        return () => ro.disconnect();
-    }, []);
-
     const totalRows = rows?.length || 0;
 
-    const visibleRowCount = Math.ceil(height / ROW_HEIGHT);
-    const firstVisibleRow = Math.floor(scrollTop / ROW_HEIGHT);
-
-    const startIndex = Math.max(0, firstVisibleRow - OVERSCAN);
-    const endIndex = Math.min(
+    const { containerRef, onScroll, startIndex, endIndex } = useVirtualization({
+        rowHeight: ROW_HEIGHT,
+        overscan: OVERSCAN,
         totalRows,
-        firstVisibleRow + visibleRowCount + OVERSCAN,
-    );
+    });
+
+    const {
+        columnWidths,
+        startResize,
+        isReady: isColumnWidthsReady,
+    } = useColumnResize({
+        columns,
+        containerRef,
+        minWidth: MIN_COL_WIDTH,
+        maxWidth: MAX_COL_WIDTH,
+    });
+
     const visibleRows = rows?.slice(startIndex, endIndex);
 
     return (
@@ -63,36 +48,61 @@ export function ResultsTable({ results }: IResultsTable) {
             className={styles.tableScroll}
             onScroll={onScroll}
         >
-            {/* Sticky / stable header */}
-            <table className={styles.tableMain}>
-                <thead className={styles.tableHeader}>
-                    <tr>
+            {isColumnWidthsReady && (
+                <table className={styles.tableMain}>
+                    <colgroup>
                         {columns?.map((col) => (
-                            <th key={col}>{col}</th>
+                            <col
+                                key={col}
+                                style={{ width: columnWidths[col] ?? 200 }}
+                            />
                         ))}
-                    </tr>
-                </thead>
+                    </colgroup>
 
-                <tbody>
-                    {/* spacer row */}
-                    <tr style={{ height: startIndex * ROW_HEIGHT }}>
-                        <td colSpan={columns?.length} />
-                    </tr>
-
-                    {visibleRows?.map((row, i) => (
-                        <tr key={startIndex + i}>
+                    {/* Sticky header */}
+                    <thead className={styles.tableHeader}>
+                        <tr>
                             {columns?.map((col) => (
-                                <td key={col}>{row[col]}</td>
+                                <th key={col}>
+                                    <span>{col}</span>
+                                    <span
+                                        className={styles.resizeHandle}
+                                        onMouseDown={(e) => startResize(e, col)}
+                                    />
+                                </th>
                             ))}
                         </tr>
-                    ))}
+                    </thead>
 
-                    {/* bottom spacer */}
-                    <tr style={{ height: (totalRows - endIndex) * ROW_HEIGHT }}>
-                        <td colSpan={columns?.length} />
-                    </tr>
-                </tbody>
-            </table>
+                    <tbody>
+                        {/* Top spacer */}
+                        <tr style={{ height: startIndex * ROW_HEIGHT }}>
+                            <td colSpan={columns?.length} />
+                        </tr>
+
+                        {/* Visible rows */}
+                        {visibleRows?.map((row, i) => {
+                            const rowIndex = startIndex + i;
+                            return (
+                                <tr key={rowIndex}>
+                                    {columns?.map((col) => (
+                                        <td key={col}>{row[col]}</td>
+                                    ))}
+                                </tr>
+                            );
+                        })}
+
+                        {/* Bottom spacer */}
+                        <tr
+                            style={{
+                                height: (totalRows - endIndex) * ROW_HEIGHT,
+                            }}
+                        >
+                            <td colSpan={columns?.length} />
+                        </tr>
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 }

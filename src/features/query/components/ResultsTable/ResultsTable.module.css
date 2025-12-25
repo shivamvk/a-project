@@ -1,26 +1,41 @@
 .tableScroll {
-    flex: 1;
-    overflow: auto;
-    min-height: 0;
-    overscroll-behavior: contain;
-    -webkit-overflow-scrolling: touch;
-
+  flex: 1;
+  overflow: auto;
+  min-height: 0;
 }
 
-.tableMain tr {
-  height: var(--row-height);
-}
 
-.tableMain,
-.tableBody {
+.tableMain {
   border-collapse: collapse;
   table-layout: fixed;
   width: 100%;
 }
 
-.tableHeader {
-    background: var(--header-bg);
-    padding: 16px;
-    position: sticky;
-    top: 0;
+.tableHeader th {
+  position: sticky;
+  top: 0;
+  background: var(--header-bg);
+  z-index: 2;
+  padding-right: 8px;
+}
+
+.tableMain th,
+.tableMain td {
+  white-space: nowrap;
+  overflow-x: auto;
+  max-width: 400px;
+}
+
+.resizeHandle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6px;
+  height: 100%;
+  cursor: col-resize;
+  user-select: none;
+}
+
+.resizeHandle:hover {
+  background: rgba(0, 0, 0, 0.15);
 }
