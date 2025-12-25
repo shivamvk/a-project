@@ -2,7 +2,7 @@ import React, { useCallback, useState } from "react";
 import { useActiveQuery } from "../../hooks/useActiveQuery";
 import type { Query } from "../../types";
 import { sampleQueries } from "../../data/sampleQueries";
-import { useFilterAndSort } from "./hooks/useFilterAndSorting";
+import { useFilterAndSort } from "./hooks/useFilterAndSort";
 import { createHistoryTitle } from "./utils";
 
 interface IQueryPage {

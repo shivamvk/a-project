@@ -12,6 +12,3 @@ export const executeQuery = async (): Promise<Query["result"]> => {
 };
 
 // [TODO] when user clicks on new query, auto focus on the editor
-// [TODO] runid impl, if user clicks run twice, show the results from latest run
-// [TODO] sorting, searching
-// [TODO] exporting the data as csv

@@ -1,7 +1,7 @@
-const STORAGE_KEY = "run_shortcut_tooltip_shown_count";
-const MAX_SHOWS = 2;
+export const STORAGE_KEY = "run_shortcut_tooltip_shown_count";
+export const MAX_SHOWS = 2;
 
-// [TODO] can have window check but not needed rn since this is csr app
+// [TODO] can have window check but not needed rn since this is a csr app
 export function shouldShowRunShortcutTooltip(): boolean {
     const count = Number(localStorage.getItem(STORAGE_KEY) || 0);
     return count < MAX_SHOWS;

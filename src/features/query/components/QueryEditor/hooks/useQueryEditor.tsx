@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from "react";
 import { useActiveQuery } from "../../../hooks/useActiveQuery";
 import { useQueryData } from "../../../hooks/useQueryData";
 import { executeQuery } from "../../../utils/executeQuery";
+import { logger } from "../../../../../utils/logger";
 
 export const useQueryEditor = (query: string, queryName: string) => {
     const [error, setError] = useState("");
@@ -64,6 +65,10 @@ export const useQueryEditor = (query: string, queryName: string) => {
                 },
             };
         });
+        logger.info("Query execution started", {
+            queryId: id,
+            isOverride: shouldOverridePreviousQuery,
+        });
 
         try {
             const result = await executeQuery();
@@ -83,6 +88,11 @@ export const useQueryEditor = (query: string, queryName: string) => {
                     },
                 },
             }));
+            logger.info("Query execution succeeded", {
+                queryId: id,
+                rowCount: result?.rows?.length || 0,
+                durationMs,
+            });
         } catch (err) {
             if (currentRunId !== runIdRef.current) return;
             const durationMs = Math.round(performance.now() - start);
@@ -104,6 +114,10 @@ export const useQueryEditor = (query: string, queryName: string) => {
                     },
                 },
             }));
+            logger.error("Query execution failed", {
+                queryId: id,
+                error: err instanceof Error ? err.message : err,
+            });
         }
     }, [
         activeQueryId,
